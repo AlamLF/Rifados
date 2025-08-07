@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Panel de Administración</h1>
+    <span class="badge bg-secondary">Boletos Apartados</span>
+</div>
+
+<p>Aquí se muestran los boletos que han sido apartados y están pendientes de confirmación de pago.</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th># Boleto</th>
+                <th>Participante</th>
+                <th>Email</th>
+                <th>Fecha de Apartado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for boleto in boletos %}
+            <tr>
+                <td><strong>{{ boleto.numero_boleto }}</strong></td>
+                <td>{{ boleto.participante.nombre }}</td>
+                <td>{{ boleto.participante.email }}</td>
+                <td>{{ boleto.fecha_apartado.strftime('%d-%m-%Y %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('confirmar', boleto_id=boleto.id, codigo_secreto=codigo_secreto) }}" class="btn btn-success btn-sm">
+                        Confirmar Pago
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center">No hay boletos pendientes de confirmación.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

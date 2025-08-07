@@ -1,0 +1,84 @@
+<!-- templates/index.html -->
+
+<!-- 1. Heredamos toda la estructura de layout.html (menú, pie de página, Bootstrap) -->
+{% extends 'layout.html' %}
+
+<!-- 2. Definimos el contenido específico para esta página -->
+{% block content %}
+
+<!-- Añadimos estilos CSS específicos para los boletos -->
+<style>
+    .boleto {
+        border: 1px solid #ccc;
+        padding: 1rem;
+        text-align: center;
+        font-weight: bold;
+        border-radius: 0.25rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .boleto-link {
+        text-decoration: none;
+    }
+    /* Estilo para boletos disponibles */
+    .boleto.disponible {
+        background-color: #d1e7dd; /* Verde suave de Bootstrap */
+        color: #0f5132;
+        cursor: pointer;
+    }
+    .boleto.disponible:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    /* Estilo para boletos apartados */
+    .boleto.apartado {
+        background-color: #fff3cd; /* Amarillo suave de Bootstrap */
+        color: #664d03;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+    /* Estilo para boletos vendidos */
+    .boleto.vendido {
+        background-color: #f8d7da; /* Rojo suave de Bootstrap */
+        color: #58151c;
+        cursor: not-allowed;
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+</style>
+
+<div class="text-center mb-4">
+    <h1>Elige tu Boleto de la Suerte</h1>
+    <p class="lead">Haz clic en un boleto disponible para apartarlo.</p>
+</div>
+
+<!-- 3. Contenedor de la cuadrícula de boletos -->
+<div class="row">
+    <!-- 4. Bucle de Jinja2: recorremos la lista 'boletos' que pasamos desde app.py -->
+    {% for boleto in boletos %}
+        <!-- Usamos el grid de Bootstrap para crear columnas responsivas.
+             En pantallas grandes (lg) cabrán 12 boletos por fila.
+             En pantallas medianas (md) cabrán 6.
+             En pantallas pequeñas (sm) cabrán 4.
+             En pantallas extra pequeñas, cabrán 2. -->
+        <div class="col-6 col-sm-3 col-md-2 col-lg-1 mb-3">
+            
+            <!-- 5. Lógica condicional para mostrar el boleto -->
+            {% if boleto.estado == 'disponible' %}
+                <!-- Si está disponible, es un enlace -->
+                <a href="/apartar/{{ boleto.numero_boleto }}" class="boleto-link">
+                    <div class="boleto disponible">
+                        {{ boleto.numero_boleto }}
+                    </div>
+                </a>
+            {% else %}
+                <!-- Si está apartado o vendido, es solo un div sin enlace -->
+                <div class="boleto {{ boleto.estado }}">
+                    {{ boleto.numero_boleto }}
+                </div>
+            {% endif %}
+
+        </div>
+    {% endfor %} <!-- Fin del bucle -->
+</div>
+
+{% endblock %} <!-- Fin del bloque de contenido -->
